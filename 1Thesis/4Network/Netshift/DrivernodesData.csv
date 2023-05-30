@@ -1,0 +1,14 @@
+S_ID,n(control),n(case),core(case),Union,Intersect,Exclusive,Jaccard-score,NESH-score,DelBet,COM
+Colwelliaceae,12,6,3,16,2,4,0.125,1.696,0.536,5
+Bacillaceae,5,4,3,9,0,4,0,2.016,0.277,2
+Alteromonadaceae,13,4,3,14,3,1,0.214,1,0.258,2
+Vibrionaceae,13,4,3,14,3,1,0.214,1,0.258,2
+Turicibacteraceae,3,4,3,6,1,3,0.167,1.762,0.188,4
+Ilumatobacteraceae,9,2,1,10,1,1,0.1,1.143,0.181,3
+Oxalobacteraceae,3,5,3,7,1,4,0.143,2,0.147,1
+Parvibaculaceae,2,5,3,7,0,5,0,2.429,0.147,1
+Stappiaceae,2,5,3,7,0,5,0,2.429,0.144,6
+Mycobacteriaceae,2,2,1,4,0,2,0,1.786,0.143,3
+Comamonadaceae,3,5,3,6,2,3,0.333,1.595,0.115,1
+Rhodobacteraceae,2,3,3,5,0,3,0,2.029,0.047,6
+Piscirickettsiaceae,2,4,3,6,0,4,0,2.238,0.041,4
