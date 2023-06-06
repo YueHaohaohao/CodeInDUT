@@ -2,6 +2,7 @@
 #https://cloud.tencent.com/developer/article/1634477
 
 library(NST)
+library(dplyr)
 comm=t(read.delim("OtuForNet.tsv",row.names= 1))[,1:500]
 group=read.delim("GroupForNet.tsv",row.names= 1)
 tnst=tNST(comm=comm, group=group, dist.method="jaccard",output.rand=TRUE,nworker=4)
