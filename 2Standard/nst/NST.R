@@ -13,33 +13,30 @@ tnst[[2]]
 tnstbt <- nst.boot(nst.result=tnst, group=group)
 tnstbt[[2]]
 
-# anova test
-tnstpaov <- nst.panova(nst.result=tnst, group=group)
-tnstpaov
+# # Bootstrapping test
+tnstbt <- nst.boot(nst.result=tnst, group=group)
+summary <- tnstbt[['summary']] %>% filter(.,Index=='NST')
+summary$Group <- factor(summary$Group,levels = c('CK','AD','AOM','DA'))
+compare <- tnstbt[['compare']]
 
-result <- tnst[["index.grp"]][,c("group","MST.i.ruzicka")]
-colnames(result) <- c("Group","Stochasticity")
-result$Deterministic <- 1-result$Stochasticity
-library(tidyr)
-result <- result %>% pivot_longer(.,cols=c("Stochasticity","Deterministic"),names_to="Index",values_to = "Ratio")
-result$Group <- factor(result$Group,levels = c('CK','AD'))
-# # 导出Bootstrapping test结果
-# write.table("\t", file="NST_result.tsv", append = F, quote = F, eol = "", row.names = F, col.names = F)
-# write.table(result,"NST_result.tsv",sep = "\t",append = T)
 library(ggplot2)
-library(ggsci) 
-library(scales)
+library(ggsignif)
+library(ggsci)
 
-p <-  ggplot(data = result,aes(x=Group,y=Ratio,fill=Index))+
-      geom_col(position = position_stack())+
-      scale_fill_manual(values = c("#0099b4","#FDAF91"))+
-      scale_y_continuous(limits = c(0,1),expand = c(0,0),labels = percent_format())+
-      geom_hline(yintercept = 0.5,lty=2)+
-      xlab(NULL)+
-      theme_bw()+
-      theme(panel.grid = element_blank(),
-            legend.title = element_blank(),
-            legend.position = 'top',
-            legend.margin = margin(rep(-10,4),unit = "pt"))
+p <- ggplot(summary,aes(x=Group,y=mean,fill=Group))+
+  geom_bar(stat = 'identity')+
+  geom_errorbar(aes(ymin=mean-stdev,ymax=mean+stdev),width=0.2)+
+  scale_y_continuous(limits = c(0,0.9),expand = c(0,0),labels = scales::percent_format())+
+  xlab(NULL)+
+  ylab('NST Index')+
+  scale_fill_lancet(alpha = 0.8)+
+  theme_bw()+
+  theme(panel.grid = element_blank(),
+        legend.title = element_blank(),
+        legend.position = 'none')+
+  geom_signif(comparisons = list(c('CK','AD'),
+                                 c('AD','AOM')),
+              annotations = "*",
+              y_position = c(0.75,0.75))
 p
-ggsave("NST.svg",p,width = 3,height = 5,units = "in")
+ggsave("NST1.svg",p,width = 4,height = 4,units = "in") 
