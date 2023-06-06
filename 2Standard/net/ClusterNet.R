@@ -1,5 +1,8 @@
-
 #参考https://mp.weixin.qq.com/s/125K35O6Q7HAz27XhzcDBw#
+detach(ggClusterNet)
+remove.packages(ggClusterNet)
+devtools::install_github('taowenmicro/ggClusterNet')
+
 
 #--导入所需R包#-------
 library(phyloseq)
@@ -126,3 +129,67 @@ moduleCompres = module_composition(pst = psCK,mod1 = mod1,j = "Genus")
 moduleCompplot = moduleCompres[[1]]
 moduleCompplot
 ggsave(filename = 'moduleCompplot.pdf',moduleCompplot,width = 10,height = 5,units = 'in')
+
+################################################################################
+#--sparcc方法计算相关矩阵,多组网络的比较#----
+tab.r = network.pip(
+  ps = ps,
+  N = 200,
+  # ra = 0.05,
+  big = FALSE,
+  select_layout = FALSE,
+  layout_net = "model_maptree2",
+  r.threshold = 0.8,
+  p.threshold = 0.05,
+  maxnode = 2,
+  method = "spearman",
+  label = FALSE,
+  lab = "elements",
+  group = "Group",
+  fill = "Phylum",
+  size = "igraph.degree",
+  zipi = TRUE,
+  ram.net = TRUE,
+  clu_method = "cluster_fast_greedy",
+  step = 100,
+  R=10,
+  ncpus = 3
+)
+
+#  建议保存一下输出结果为R对象，方便之后不进行相关矩阵的运算，节约时间
+saveRDS(tab.r,"network.pip.sparcc.rds")
+tab.r = readRDS("./network.pip.sparcc.rds")
+
+#-提取全部图片的存储对象
+plot = tab.r[[1]]
+# 提取网络图可视化结果
+p0 = plot[[1]]#网络图
+p0
+p1 = plot[[2]]#ZiPi图
+p1
+p2 = plot[[3]]#随机网络幂率分布
+p2
+
+#--提取相关矩阵,这是一个list存储的相关矩阵
+dat = tab.r[[2]]
+cortab = dat$net.cor.matrix$cortab
+
+# 大型相关矩阵跑出来不容易，建议保存，方便各种网络性质的计算
+# saveRDS(cortab,"cor.matrix.all.group.rds")
+# cor = readRDS("./cor.matrix.all.group.eds")
+
+################################################################################
+#--网络显著性比较#-----
+mdcmpnetData= module.compare.net.pip(
+  ps = NULL,
+  corg = cortab,
+  degree = TRUE,
+  zipi = FALSE,
+  r.threshold= 0.8,
+  p.threshold=0.05,
+  method = "spearman",
+  padj = F,
+  n = 3)
+
+mdcmpnetTab = mdcmpnetData[[1]]
+head(mdcmpnetTab)
